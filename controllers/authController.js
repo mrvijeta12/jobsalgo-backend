@@ -1,9 +1,11 @@
 import User from "../modals/userModal.js";
 import bcrypt from "bcryptjs";
+import { generatedToken, verifyToken } from "../middleware/jwt.js";
+import jwt from "jsonwebtoken";
 
 // register
 
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name) {
@@ -46,4 +48,57 @@ const registerUser = async (req, res) => {
   }
 };
 
-export default registerUser;
+// login
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+    if (!password) {
+      return res.status(400).json({ message: "Password is required." });
+    }
+
+    const existingUser = await User.findOne({ email: email });
+    if (!existingUser) {
+      return res.status(400).json({ message: "Email does not exists." });
+    }
+    const comparePassword = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    if (!comparePassword) {
+      return res.status(400).json({ message: "Passoerd does not match." });
+    }
+    const payload = {
+      id: existingUser._id,
+      name: existingUser.name,
+      email: existingUser.email,
+    };
+
+    const token = generatedToken(payload);
+
+    return res.status(200).json({
+      message: "User login successfully",
+      token: token,
+      user: {
+        id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
+
+//verify token
+
+export const verifyTokenController = async (req, res) => {
+  res.status(200).json({
+    message: "Token is valid",
+    user: req.loggedInUser,
+  });
+};
