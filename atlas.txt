@@ -1,3 +1,0 @@
-WAoA6Kt2qD48oYrh
-vijetavarma1_db_user
-mongodb+srv://vijetavarma1_db_user:WAoA6Kt2qD48oYrh@jobsalgo-db.er5vzk7.mongodb.net/?appName=jobsalgo-db
