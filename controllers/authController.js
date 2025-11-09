@@ -11,23 +11,32 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name) {
-      return res.status(400).json({ message: "Name is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Name is required" });
     }
     if (!email) {
-      return res.status(400).json({ message: "Email is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
     }
     if (!password) {
-      return res.status(400).json({ message: "Password is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Password is required" });
     }
     if (password.length < 6) {
       return res.status(400).json({
+        success: false,
         message: "Password length must me at least 6 characters",
       });
     }
 
     const existUser = await User.findOne({ email });
     if (existUser) {
-      return res.status(409).json({ message: "User is already register" });
+      return res
+        .status(409)
+        .json({ success: false, message: "User is already register" });
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
@@ -37,6 +46,7 @@ export const registerUser = async (req, res) => {
       password: hashPassword,
     });
     res.status(201).json({
+      success: true,
       message: "User register successfully",
       user: {
         id: newUser._id,
@@ -45,7 +55,7 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -55,22 +65,30 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email) {
-      return res.status(400).json({ message: "Email is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required." });
     }
     if (!password) {
-      return res.status(400).json({ message: "Password is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Password is required." });
     }
 
     const existingUser = await User.findOne({ email: email });
     if (!existingUser) {
-      return res.status(401).json({ message: "Email does not exists." });
+      return res
+        .status(401)
+        .json({ success: false, message: "Email does not exists." });
     }
     const comparePassword = await bcrypt.compare(
       password,
       existingUser.password
     );
     if (!comparePassword) {
-      return res.status(401).json({ message: "Password does not match." });
+      return res
+        .status(401)
+        .json({ success: false, message: "Password does not match." });
     }
     const payload = {
       id: existingUser._id,
@@ -81,6 +99,7 @@ export const loginUser = async (req, res) => {
     const token = generatedToken(payload);
 
     return res.status(200).json({
+      success: true,
       message: "User login successfully",
       token: token,
       user: {
@@ -91,7 +110,7 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ message: "Server error." });
+    return res.status(500).json({ success: false, message: "Server error." });
   }
 };
 
@@ -99,6 +118,7 @@ export const loginUser = async (req, res) => {
 
 export const verifyTokenController = async (req, res) => {
   res.status(200).json({
+    success: true,
     message: "Token is valid",
     user: req.loggedInUser,
   });
@@ -112,29 +132,43 @@ export const addEmployer = async (req, res) => {
     const employerData = req.body;
     const userId = req.loggedInUser?.id;
     if (!employerData.name) {
-      return res.status(400).json({ message: "Name is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Name is required" });
     }
     if (!employerData.email) {
-      return res.status(400).json({ message: "Email is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
     }
     if (!employerData.company_name) {
-      return res.status(400).json({ message: "Company name is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Company name is required" });
     }
     if (!employerData.company_size) {
-      return res.status(400).json({ message: "Company size is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Company size is required" });
     }
     if (!employerData.industry) {
-      return res.status(400).json({ message: "Industry is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Industry is required" });
     }
     if (!employerData.company_location) {
-      return res.status(400).json({ message: "Company location is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Company location is required" });
     }
 
     const existingEmployer = await Employers.findOne({
       email: employerData.email,
     });
     if (existingEmployer) {
-      return res.status(400).json({ message: "Employer already exist." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Employer already exist." });
     }
 
     const newEmployer = await Employers.create({
@@ -143,12 +177,13 @@ export const addEmployer = async (req, res) => {
     });
 
     res.status(201).json({
+      success: true,
       message: "Employer created successfully",
       employer: newEmployer,
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -158,26 +193,29 @@ export const getEmployer = async (req, res) => {
   try {
     const id = req.query.id?.trim();
     if (!id) {
-      return res.status(400).json({ message: "Employer ID is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Employer ID is required." });
     }
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid Employer ID format." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Employer ID format." });
     }
     const employerExist = await Employers.findById(id);
     if (!employerExist) {
       return res
         .status(404)
-        .json({ message: `Employer not found with ID: ${id}` });
+        .json({ success: false, message: `Employer not found with ID: ${id}` });
     }
-    return res
-      .status(200)
-      .json({
-        message: "Employer  fetched successfully",
-        employer: employerExist,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Employer  fetched successfully",
+      employer: employerExist,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -186,12 +224,14 @@ export const getEmployer = async (req, res) => {
 export const getAllEmployers = async (req, res) => {
   try {
     const employers = await Employers.find().sort({ createdAt: -1 });
-    res
-      .status(200)
-      .json({ message: "Employers fetched successfully", employers });
+    res.status(200).json({
+      success: true,
+      message: "Employers fetched successfully",
+      employers,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -201,36 +241,45 @@ export const updateEmployer = async (req, res) => {
   try {
     const id = req.query.id?.trim();
     if (!id) {
-      return res.status(400).json({ message: "Employer ID is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Employer ID is required." });
     }
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid Employer ID format." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Employer ID format." });
     }
 
     const updates = req.body;
     if (!updates || Object.keys(updates).length === 0) {
-      return res.status(400).json({ message: "No update data provided." });
+      return res
+        .status(400)
+        .json({ success: false, message: "No update data provided." });
     }
 
     const employerExist = await Employers.findById(id);
     if (!employerExist) {
       return res
         .status(404)
-        .json({ message: `Employer not found with ID: ${id}` });
+        .json({ success: false, message: `Employer not found with ID: ${id}` });
     }
     const updatedEmployer = await Employers.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
     });
     if (!updatedEmployer) {
-      return res.status(404).json({ message: "Employer not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Employer not found" });
     }
     res.status(200).json({
+      success: true,
       message: "Employer updated successfully.",
       employer: updatedEmployer,
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
