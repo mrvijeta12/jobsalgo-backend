@@ -37,6 +37,6 @@ router.get("/getAllEmployers", verifyToken, getAllEmployers);
 router.put("/updateEmployer", verifyToken, updateEmployer);
 
 // delete employer
-router.post("/deleteEmployer", verifyToken, deleteEmployer);
+router.delete("/deleteEmployer", verifyToken, deleteEmployer);
 
 export default router;
