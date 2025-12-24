@@ -1,0 +1,115 @@
+{
+  "success": true,
+  "data": {
+    "name": "Markanday Rai",
+    "email": "mark24193@gmail.com",
+    "phone": "+91-7017373744",
+    "skills": [
+      "Service Cloud",
+      "Sales Cloud",
+      "Community Cloud",
+      "Einstein Analytics",
+      "Salesforce Flow",
+      "Approval Process",
+      "Admin and Security Setup",
+      "VS Code",
+      "Postman",
+      "Splunk",
+      "Data Loader",
+      "MS Excel",
+      "LWC Framework",
+      "Aura Framework",
+      "Apex",
+      "Visualforce",
+      "SOQL",
+      "Copado",
+      "Git",
+      "SFDX",
+      "VSTS",
+      "Jenkins",
+      "SourceTree",
+      "Ant",
+      "Workbench",
+      "ChangeSet",
+      "JIRA"
+    ],
+    "experience": [
+      {
+        "title": "Technical Lead",
+        "company": "IQVIA",
+        "startDate": "09/2022",
+        "endDate": "Present",
+        "location": "Bengaluru",
+        "description": [
+          "Experienced in managing 2-3 teams concurrently, each comprising 4-5 members.",
+          "Expertise in Implementation and Hypercare for multiple projects simultaneously.",
+          "Led a model involving the successful go-live of 20+ countries with different dates, structured under 4 orgs.",
+          "Implemented a multi-org architecture, integrated with Onekey, SAP using Mulesoft, and TIBCO as Interface.",
+          "Managed resource utilization, onboarding, and optimized team composition.",
+          "Successfully navigated the full implementation cycle from requirement gathering to project handover to Support team and also participated in Go-No Go plans, Go Live strategies, and Hypercare support.",
+          "Directly engaged with clients, program managers, support teams, and various stakeholders.",
+          "Provided assistance to developers in coding and customization challenges.",
+          "Worked on a managed package solution dedicated to pharmaceutical stakeholders."
+        ]
+      },
+      {
+        "title": "Developer Support Engineer",
+        "company": "Salesforce",
+        "startDate": "12/2020",
+        "endDate": "09/2022",
+        "location": "Hyderabad",
+        "description": [
+          "Experienced in handling cases from diverse clients, primarily assisting Salesforce developers.",
+          "Challenging role involving rapid assessment of org code/configurations and providing timely resolutions.",
+          "Proficient in troubleshooting tools such as debug logs, Postman, Splunk, etc.",
+          "Extensive experience in resolving cases related to LWC/Aura code, Apex code, flows, Visualforce pages, and various Salesforce configurations.",
+          "Client-facing role, directly interacting with clients, managing 20-25 cases concurrently.",
+          "Worked in the Digital Engagement team, assisting developers in designing and developing bots, Messaging Channel, and Omni Channel.",
+          "Promoted to Swarm Lead, providing support to other developer support engineers in resolving cases.",
+          "Conducted interviews for over 100 candidates and actively participated in hiring drives."
+        ]
+      },
+      {
+        "title": "Senior System Engineer",
+        "company": "Infosys Limited",
+        "startDate": "05/2018",
+        "endDate": "12/2020",
+        "location": "Hyderabad",
+        "description": [
+          "Experienced with Agile Extreme Programming (XP) development and Scrum lifecycle practices, including Sprint Planning, Daily Stand Up, Sprint Review, and Sprint Retrospective meetings.",
+          "Created Lightning Web Components using SLDS (Salesforce Lightning Design System) and Lightning Components with Lightning Data Service and Apex server-side controllers.",
+          "Proficient in using Lightning App Builder, Community Builder, and Salesforce Lightning Design System.",
+          "Implemented SFDC customization tasks such as Apex Triggers, Apex Classes, Asynchronous Apex, and Apex Test Classes.",
+          "Set up OWD (Organization-Wide Defaults), Role Hierarchies, and Sharing Rules for system security design.",
+          "Successfully handled data migration from classic systems to the Lightning platform.",
+          "Involved in Release Management and Deployment using tools like VSTS, Jenkins, Source Tree, and Ant."
+        ]
+      },
+      {
+        "title": "Workforce Management Consultant",
+        "company": "Manpower Group",
+        "startDate": "08/2017",
+        "endDate": "03/2018",
+        "location": "Gurugram",
+        "description": [
+          "Created and managed reports and dashboards to monitor individual, team, and overall performance across PAN India for various clients.",
+          "Handled SFDC administrative tasks, including workflow rules, process builder, flows, approval processes, page layouts, case assignment rules, validation rules, permission sets, custom permissions, profiles, custom settings, custom labels, custom metadata, email templates, and email-to-case.",
+          "Wrote SOQL & SOSL queries and analyzed data.",
+          "Successfully troubleshooted production issues, implemented updates for minor cases, and made enhancements to existing functionality."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "B. Tech in Electrical & Electronics Engineering",
+        "institution": "Krishna Institute of Engineering & Technology (affiliated with Dr.A.P.J. Abdul Kalam Technical University)",
+        "years": "2013-2017"
+      },
+      {
+        "degree": "Intermediate and Matriculation",
+        "institution": "Central Academy Senior Secondary School, Gorakhpur",
+        "years": "2010-2012"
+      }
+    ]
+  }
+}

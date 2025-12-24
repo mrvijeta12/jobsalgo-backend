@@ -33,7 +33,7 @@ export const verifyToken = async (req, res, next) => {
 // generate token
 export const generatedToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-    expiresIn: "1h",
+    expiresIn: "24h",
   });
 };
 

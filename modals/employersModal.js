@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const employersSchema = new mongoose.Schema(
   {
+    company_logo: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -39,6 +44,10 @@ const employersSchema = new mongoose.Schema(
     contact_number: {
       type: String,
       trim: true,
+    },
+    company_logo: {
+      type: String,
+      required: true,
     },
     description: {
       type: String,

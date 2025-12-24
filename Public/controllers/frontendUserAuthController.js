@@ -1,28 +1,40 @@
-import User from "../modals/userModal.js";
+import Frontend_Users from "../../modals/frontendUsersModal.js";
 import bcrypt from "bcryptjs";
-import { generatedToken } from "../middleware/jwt.js";
+import { generatedToken } from "../../middleware/jwt.js";
 import mongoose from "mongoose";
 
 //! AUTH
 // register
 
-export const registerUser = async (req, res) => {
+export const registerFrontendUser = async (req, res) => {
   try {
+    if (req.body == null) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body cannot be empty",
+      });
+    }
+
+    // CASE 2 — req.body exists but is empty {}
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No user data is provided",
+      });
+    }
     const { name, email, password } = req.body;
+    console.log("api hit");
+
     if (!name) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Name is required" });
+      return res.status(400).json({ success: false, message: "Enter name" });
     }
     if (!email) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email is required" });
+      return res.status(400).json({ success: false, message: "Enter email" });
     }
     if (!password) {
       return res
         .status(400)
-        .json({ success: false, message: "Password is required" });
+        .json({ success: false, message: "Enter password" });
     }
     if (password.length < 6) {
       return res.status(400).json({
@@ -31,7 +43,7 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    const existUser = await User.findOne({ email });
+    const existUser = await Frontend_Users.findOne({ email });
     if (existUser) {
       return res
         .status(409)
@@ -39,14 +51,22 @@ export const registerUser = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    const newUser = await User.create({
+    const newUser = await Frontend_Users.create({
       name,
       email,
       password: hashPassword,
     });
+
+    const payload = {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+    };
+    const token = generatedToken(payload);
     res.status(201).json({
       success: true,
-      message: "User register successfully",
+      message: "User registered successfully",
+      token: token,
       user: {
         id: newUser._id,
         name: newUser.name,
@@ -54,14 +74,30 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log("register user :", error);
+
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 // login
 
-export const loginUser = async (req, res) => {
+export const loginFrontendUser = async (req, res) => {
   try {
+    if (req.body == null) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body cannot be empty",
+      });
+    }
+
+    // CASE 2 — req.body exists but is empty {}
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No user data is provided",
+      });
+    }
     const { email, password } = req.body;
     if (!email) {
       return res
@@ -74,7 +110,7 @@ export const loginUser = async (req, res) => {
         .json({ success: false, message: "Password is required." });
     }
 
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await Frontend_Users.findOne({ email: email });
     if (!existingUser) {
       return res
         .status(401)
@@ -111,14 +147,4 @@ export const loginUser = async (req, res) => {
     console.log(error.message);
     return res.status(500).json({ success: false, message: "Server error." });
   }
-};
-
-//!verify token
-
-export const verifyTokenController = async (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Token is valid",
-    user: req.loggedInUser,
-  });
 };
