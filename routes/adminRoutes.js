@@ -75,6 +75,6 @@ router.get("/getjob", verifyToken, getJob);
 router.delete("/deletejob", verifyToken, deleteJob);
 
 //! CV
-router.post("/upload-cv", upload.single("cv"), uploadCv);
+router.post("/upload-cv", verifyToken, upload.single("cv"), uploadCv);
 
 export default router;

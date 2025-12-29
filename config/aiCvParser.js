@@ -1,7 +1,19 @@
+// import dotenv from "dotenv";
+// import fs from "fs";
+// // Load .env first
+// if (fs.existsSync(".env")) {
+//   dotenv.config({ path: ".env" });
+// }
+
+// // Load .env.production next (overrides any duplicate keys)
+// if (fs.existsSync(".env.production")) {
+//   dotenv.config({ path: ".env.production" });
+// }
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // 🟢 genAI is defined here locally in this file
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// console.log(genAI);
 
 export async function parseCvWithAI(fileBuffer) {
   // Use the 2025 stable model

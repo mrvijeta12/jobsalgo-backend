@@ -2,6 +2,7 @@ import { google } from "googleapis";
 
 export async function saveToGoogleSheet(data) {
   const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  // console.log("credentials", credentials);
 
   const auth = new google.auth.GoogleAuth({
     credentials,
@@ -13,8 +14,6 @@ export async function saveToGoogleSheet(data) {
   // 🟢 HELPER FUNCTION: Converts objects/arrays to strings so Sheets can accept them
   const flatten = (val) => {
     if (Array.isArray(val)) {
-      // If it's an array of strings, join them.
-      // If it's an array of objects (like your experience), stringify it.
       return val
         .map((item) => (typeof item === "object" ? JSON.stringify(item) : item))
         .join("\n\n");
@@ -31,15 +30,16 @@ export async function saveToGoogleSheet(data) {
     flatten(data.email),
     flatten(data.phone),
     flatten(data.skills),
-    flatten(data.experience), // 🟢 This was causing your error
-    flatten(data.education), // 🟢 This would have caused the next error
+    flatten(data.experience),
+    flatten(data.education),
+    flatten(data.cvUrl),
     new Date().toLocaleString(),
   ];
 
   try {
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: "Sheet1!A:G", // 🟢 Updated range for 7 columns
+      range: "Sheet1!A:H",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [values],

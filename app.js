@@ -1,26 +1,16 @@
-import dotenv from "dotenv";
+import "./config/env.js";
 import express from "express";
-import connection from "./connection/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
 import cors from "cors";
-import fs from "fs";
+import cloudinary from "./config/cloudinary.js";
+import { parseCvWithAI } from "./config/aiCvParser.js";
+import { saveToGoogleSheet } from "./config/googleSheets.js";
+import connection from "./connection/db.js";
 
-// Load .env first
-if (fs.existsSync(".env")) {
-  dotenv.config({ path: ".env" });
-}
-
-// Load .env.production next (overrides any duplicate keys)
-if (fs.existsSync(".env.production")) {
-  dotenv.config({ path: ".env.production" });
-}
-console.log(process.env);
-
+connection();
 const PORT = process.env.PORT || 8000;
 
-//database
-connection();
 const app = express();
 const allowedOrigins = [
   "https://jobsalgo.com",
@@ -52,25 +42,14 @@ app.options(/(.*)/, cors(corsOptions)); // Fix for Express 5 crash
 app.use(express.json({ limit: "50mb" })); // Increased for file uploads
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-// 6. Logger (Moved up so it actually logs route hits)
-app.use((req, res, next) => {
-  console.log(`➡️  [${process.env.NODE_ENV}] ${req.method} ${req.originalUrl}`);
-  next();
-});
-
 //routes
 app.use("/api/admin", adminRoutes);
 app.use("/api", publicRoutes);
-
-app.use((req, res, next) => {
-  console.log("Incoming request:", req.method, req.url);
-  next();
-});
 
 app.get("/", (req, res) => {
   res.send("<h1> Hello World </h1>");
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`);
+  console.log(`Server is running on ${PORT}`);
 });
