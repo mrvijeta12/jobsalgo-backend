@@ -24,7 +24,8 @@ export const addJob = async (req, res) => {
       job_type,
       category,
       location,
-      salary,
+      minSalary,
+      maxSalary,
       experience,
       number_of_openings,
       application_deadline,
@@ -55,7 +56,8 @@ export const addJob = async (req, res) => {
       job_title: "Job title",
       job_type: "Job type",
       category: "Category",
-      salary: "Salary",
+      minSalary: "Min salary",
+      maxSalary: "Max salary",
       experience: "Experience",
       number_of_openings: "Number of openings",
       application_deadline: "Application deadline",
@@ -84,10 +86,28 @@ export const addJob = async (req, res) => {
         });
       }
     }
+    const minSalaryNum = Number(minSalary);
+    const maxSalaryNum = Number(maxSalary);
+
+    if (isNaN(minSalaryNum) || isNaN(maxSalaryNum)) {
+      return res.status(400).json({
+        success: false,
+        message: "Salary must be valid number.",
+      });
+    }
+    if (minSalaryNum > maxSalaryNum) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Maximum salary must be greater than or equal to minimum salary.",
+      });
+    }
 
     // Create job
     const newJob = await Jobs.create({
       ...req.body,
+      minSalary: minSalaryNum,
+      maxSalary: maxSalaryNum,
       createdBy: employerId,
     });
     // console.log(newJob);
@@ -157,7 +177,7 @@ export const updateJobs = async (req, res) => {
       });
     }
 
-    // 1️⃣ req.body is null or undefined
+    // req.body is null or undefined
     if (req.body == null) {
       return res.status(400).json({
         success: false,
@@ -167,7 +187,7 @@ export const updateJobs = async (req, res) => {
 
     const updates = req.body;
 
-    // 2️⃣ req.body exists BUT is empty {}
+    //  req.body exists BUT is empty {}
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
         success: false,
@@ -175,12 +195,13 @@ export const updateJobs = async (req, res) => {
       });
     }
 
-    // 3️⃣ Required fields — only validate IF the user is updating them
+    //  Required fields — only validate IF the user is updating them
     const requiredFields = {
       job_title: "Job title",
       job_type: "Job type",
       category: "Category",
-      salary: "Salary",
+      minSalary: "Min Salary",
+      maxSalary: "Max Salary",
       experience: "Experience",
       number_of_openings: "Number of openings",
       application_deadline: "Application deadline",
@@ -211,7 +232,28 @@ export const updateJobs = async (req, res) => {
       }
     }
 
-    // 4️⃣ Conditional validation for location
+    if (updates.minSalary !== undefined || updates.maxSalary !== undefined) {
+      const minSalaryNum = Number(updates.minSalary ?? jobExists.minSalary);
+      const maxSalaryNum = Number(updates.maxSalary ?? jobExists.maxSalary);
+
+      if (isNaN(minSalaryNum) || isNaN(maxSalaryNum)) {
+        return res.status(400).json({
+          success: false,
+          message: "Salary must be a valid number.",
+        });
+      }
+      if (minSalaryNum > maxSalaryNum) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Maximum salary must be greater than or equal to minimum salary.",
+        });
+      }
+      updates.minSalary = minSalaryNum;
+      updates.maxSalary = maxSalaryNum;
+    }
+
+    //  Conditional validation for location
     const newWorkMode = updates.work_mode || jobExists.work_mode;
 
     if (newWorkMode === "Onsite" || newWorkMode === "Hybrid") {
@@ -223,7 +265,7 @@ export const updateJobs = async (req, res) => {
       }
     }
 
-    // 5️⃣ Update job
+    //  Update job
     const updatedJob = await Jobs.findByIdAndUpdate(jobId, updates, {
       new: true,
       runValidators: true,

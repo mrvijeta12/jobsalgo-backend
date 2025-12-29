@@ -25,9 +25,14 @@ const jobSchema = new mongoose.Schema(
         return this.work_mode === "Onsite" || this.work_mode === "Hybrid";
       },
     },
-    salary: {
-      type: String,
-      trim: true,
+    minSalary: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    maxSalary: {
+      type: Number,
+      min: 0,
       required: true,
     },
     experience: {

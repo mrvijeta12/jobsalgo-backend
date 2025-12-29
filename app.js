@@ -1,13 +1,23 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import connection from "./connection/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
-
 import cors from "cors";
+import fs from "fs";
+
+// Load .env first
+if (fs.existsSync(".env")) {
+  dotenv.config({ path: ".env" });
+}
+
+// Load .env.production next (overrides any duplicate keys)
+if (fs.existsSync(".env.production")) {
+  dotenv.config({ path: ".env.production" });
+}
+console.log(process.env);
 
 const PORT = process.env.PORT || 8000;
-const isProduction = process.env.NODE_ENV === "production";
 
 //database
 connection();
@@ -21,14 +31,11 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // 1. Allow Tooling (Postman/Mobile)
     if (!origin) return callback(null, true);
-
-    // 2. Check if origin is in our allowed list
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.error(`❌ CORS Blocked: ${origin} is not in allowed list`);
+      console.error(` CORS Blocked: ${origin} is not in allowed list`);
       callback(new Error("Not allowed by CORS"));
     }
   },
