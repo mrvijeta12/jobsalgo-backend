@@ -3,9 +3,6 @@ import express from "express";
 import adminRoutes from "./routes/adminRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
 import cors from "cors";
-import cloudinary from "./config/cloudinary.js";
-import { parseCvWithAI } from "./config/aiCvParser.js";
-import { saveToGoogleSheet } from "./config/googleSheets.js";
 import connection from "./connection/db.js";
 
 connection();
@@ -38,7 +35,6 @@ app.use(cors(corsOptions));
 app.options(/(.*)/, cors(corsOptions)); // Fix for Express 5 crash
 
 // Middleware
-// app.use(express.json());
 app.use(express.json({ limit: "50mb" })); // Increased for file uploads
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 

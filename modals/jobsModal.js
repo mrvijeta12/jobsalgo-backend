@@ -9,8 +9,8 @@ const jobSchema = new mongoose.Schema(
     },
 
     job_type: {
-      type: String,
-      enum: ["Full-time", "Part-time", "Internship", "Remote", "Contract"],
+      type: [String],
+      enum: ["Full-time", "Part-time", "Internship", "Contract"],
       required: true,
     },
     category: {
@@ -70,7 +70,7 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
     work_mode: {
-      type: String,
+      type: [String],
       enum: ["Onsite", "Remote", "Hybrid"],
       required: true,
     },

@@ -6,7 +6,7 @@ import {
   registerFrontendUser,
 } from "../Public/controllers/frontendUserAuthController.js";
 import {
-  addFrontendJob,
+  // addFrontendJob,
   getPublicJobs,
   getPublicJobById,
 } from "../Public/controllers/frontendJobController.js";
@@ -28,7 +28,7 @@ router.post("/login", loginFrontendUser);
 
 //! Jobs
 // add job
-router.post("/addjob", verifyToken, addFrontendJob);
+// router.post("/addjob", verifyToken, addFrontendJob);
 
 // get all jobs
 router.get("/jobs", getPublicJobs);

@@ -3,19 +3,10 @@ import Jobs from "../modals/jobsModal.js";
 
 export const addJob = async (req, res) => {
   try {
-    // CASE 1 — req.body is null or undefined
-    if (req.body == null) {
+    if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({
         success: false,
         message: "Request body cannot be empty",
-      });
-    }
-
-    // CASE 2 — req.body exists but is empty {}
-    if (Object.keys(req.body).length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "No job data is provided",
       });
     }
 
