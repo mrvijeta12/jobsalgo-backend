@@ -101,6 +101,7 @@ export const addJob = async (req, res) => {
       maxSalary: maxSalaryNum,
       createdBy: employerId,
     });
+
     // console.log(newJob);
 
     return res.status(201).json({

@@ -12,8 +12,8 @@ const app = express();
 const allowedOrigins = [
   "https://jobsalgo.com",
   "https://www.jobsalgo.com",
-  "http://localhost:3000", // Allow local React app
-  "http://localhost:5173", // Allow Vite (if you use it)
+  // "http://localhost:3000",
+  // "http://localhost:5173",
 ];
 
 const corsOptions = {

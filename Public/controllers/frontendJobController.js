@@ -1,111 +1,7 @@
 import mongoose from "mongoose";
-// import Frontend_Jobs from "../../modals/frontendJobModal.js";
-// import Frontend_Users from "../../modals/frontendUsersModal.js";
 import Jobs from "../../modals/jobsModal.js";
 
 //! add jobs (post a job page)
-// export const addFrontendJob = async (req, res) => {
-//   try {
-//     // Request body empty check
-//     if (!req.body || Object.keys(req.body).length === 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Request body cannot be empty",
-//       });
-//     }
-
-//     const userId = req.query.id?.trim();
-//     console.log(userId);
-
-//     if (!userId) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Employer ID is required",
-//       });
-//     }
-
-//     if (!mongoose.Types.ObjectId.isValid(userId)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid Employer ID format",
-//       });
-//     }
-
-//     const user = await Frontend_Users.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     // Required fields list
-//     const requiredFields = [
-//       "company_name",
-//       "job_title",
-//       "category",
-//       "work_mode",
-//       "experience",
-//       "job_level",
-//       "salary_range",
-//       "openings",
-//       "job_type",
-//       "employment_type",
-//       "education",
-//       "posted_date",
-//       "application_deadline",
-//       "job_description",
-//       "skills",
-//       "company_email",
-//     ];
-
-//     // Validate required fields
-//     for (const field of requiredFields) {
-//       if (!req.body[field] || String(req.body[field]).trim() === "") {
-//         return res.status(400).json({
-//           success: false,
-//           message: `${field} is required`,
-//         });
-//       }
-//     }
-
-//     // Validate location if work_mode = onsite/hybrid
-//     if (req.body.work_mode === "Onsite" || req.body.work_mode === "Hybrid") {
-//       if (!req.body.location || req.body.location.trim() === "") {
-//         return res.status(400).json({
-//           success: false,
-//           message: "Location is required for Onsite or Hybrid",
-//         });
-//       }
-//     }
-
-//     // Trim string fields
-//     const cleanedData = {};
-//     for (const key in req.body) {
-//       cleanedData[key] =
-//         typeof req.body[key] === "string"
-//           ? req.body[key].trim()
-//           : req.body[key];
-//     }
-
-//     cleanedData.createdBy = userId;
-
-//     // Create job
-//     const newJob = await Frontend_Jobs.create(cleanedData);
-
-//     return res.status(201).json({
-//       success: true,
-//       message: "Job created successfully",
-//       data: newJob,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//       error: error.message,
-//     });
-//   }
-// };
 
 //! get all jobs from jobs table (all job page / job listing page )
 const ALLOWED_FILTERS = [
@@ -210,19 +106,35 @@ const buildMongoQuery = (filters) => {
 };
 
 export const getPublicJobs = async (req, res) => {
+  // console.log("URL HIT:", req.originalUrl);
   const result = cleanFilters(req.query);
   const mongoQuery = buildMongoQuery(result);
   // console.log(mongoQuery);
-  let sortQuery = { createdAt: -1 }; // default
+  let sortQuery = { posted_date: -1 }; // default: recent
 
   switch (req.query.sort) {
-    case "salary_low":
-      sortQuery = { minSalary: 1 };
-      break;
-    case "salary_high":
+    case "salary_desc": // High → Low
       sortQuery = { maxSalary: -1 };
       break;
+
+    case "salary_asc": // Low → High
+      sortQuery = { minSalary: 1 };
+      break;
+
+    case "title_asc": // A–Z
+      sortQuery = { job_title: 1 };
+      break;
+
+    case "title_desc": // Z–A
+      sortQuery = { job_title: -1 };
+      break;
+
     case "recent":
+      sortQuery = { posted_date: -1 };
+      break;
+
+    case "relevance":
+      // optional: fallback to recent or textScore (see below)
       sortQuery = { posted_date: -1 };
       break;
   }
@@ -233,6 +145,7 @@ export const getPublicJobs = async (req, res) => {
 
   try {
     const jobs = await Jobs.find(mongoQuery)
+      .populate("createdBy")
       .sort(sortQuery)
       .skip(skip)
       .limit(limit);
